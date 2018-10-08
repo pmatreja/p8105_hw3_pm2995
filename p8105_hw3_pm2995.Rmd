@@ -1,0 +1,22 @@
+---
+title: "p8105_hw3_pm2995"
+author: "Priyal"
+date: "10/8/2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+library(tidyverse)
+library(readxl)
+library(p8105.datasets)
+
+theme_set(theme_bw() + theme(legend.position = "bottom"))
+```
+
