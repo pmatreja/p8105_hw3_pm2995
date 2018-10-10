@@ -16,7 +16,35 @@ knitr::opts_chunk$set(
 library(tidyverse)
 library(readxl)
 library(p8105.datasets)
+library(ggplot2)
 
 theme_set(theme_bw() + theme(legend.position = "bottom"))
+```
+
+
+#Problem 1
+
+##Problem 1.1
+
+Loading the data and some cleaning 
+
+First we load the BRFSS data from the `p8105.datasets` package.
+
+```{r}
+data(brfss_smart2010)
+```
+
+Next, we do some cleaning to ensure appropriate variable names. I cleaned the data using janitor:: clean_names function converting them all to lower snake case, filter to include only overall health topic data and include responses from excellent to poor. Further, I organized the responses as a factor taking levels ordered from excellent to poor using mutate.
+
+```{r tidy_brfss}
+brfss_tidy = brfss_smart2010 %>% 
+  janitor::clean_names() %>%
+  filter(topic == "Overall Health") %>%
+  filter(response %in% c("Excellent", "Very good", "Good", "Fair", "Poor")) %>% 
+  rename(location_abbr = locationabbr, location_desc = locationdesc) %>%
+  mutate(response = as.factor(response)) %>% 
+  mutate(
+    response = fct_relevel(response, c("Excellent", "Very good", "Good", "Fair", "Poor"))
+    )
 ```
 
