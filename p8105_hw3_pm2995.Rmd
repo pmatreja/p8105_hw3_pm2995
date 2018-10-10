@@ -79,7 +79,30 @@ The code below groups the brfss_tidy data by location_abbr(state) and year and f
 ```{r}
 brfss_tidy %>% 
   group_by(location_abbr, year) %>% 
-  summarize(n_obs = n()) %>%
+  summarize(n_obs = n()) %>% 
   ggplot(aes(x = year, y = n_obs, color = location_abbr)) +
   geom_line() + labs(title = "No. of locations in each state from 2002 to 2010", x = "Year", y = "Number of observations")
 ```
+
+  
+#Problem 1.4
+
+Make a table showing, for the years 2002, 2006, and 2010, the mean and standard deviation of the proportion of “Excellent” responses across locations in NY State.
+
+Answer:
+The code below filters to keep the rows for the years 2002,2006 and 2010, Excellent response and for NY state. Further, it uses group_by function to group by the year and summarize to compute mean and standard deviations of for those years. The result is presented in the form of a table using knitr::kable.
+
+```{r}
+brfss_tidy %>%
+  filter(year %in% c("2002", "2006", "2010")) %>% 
+  filter(response == "Excellent") %>% 
+  filter(location_abbr == "NY") %>% 
+  group_by(year) %>% 
+  summarize(mean_excellent = mean(data_value, na.rm = TRUE), sd_excellent = sd(data_value, na.rm = TRUE)) %>% 
+  knitr::kable(digits = 1)
+```
+
+There is not much difference in the mean proportion for the excellent response for the years 2006 and 2010, whereas the mean proportion for the excellent response is a bit different in the year 2002.
+
+
+
