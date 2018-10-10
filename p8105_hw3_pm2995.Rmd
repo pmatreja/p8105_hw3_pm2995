@@ -127,3 +127,14 @@ brfss_tidy %>%
 
 The distribution of state level averages over time suggest that the response "very good" was observed the most over the years and the response "poor" was observed the least.
 
+
+#Problem 2
+
+Loading the dataset 
+
+Let's load the data from the `p8105.datasets` package. 
+
+```{r}
+data("instacart")
+```
+
