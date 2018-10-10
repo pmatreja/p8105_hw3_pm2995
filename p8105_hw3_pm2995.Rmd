@@ -148,6 +148,7 @@ There are `r nrow(instacart)` rows and `r ncol(instacart)` columns. All the vari
 
 How many aisles are there, and which aisles are the most items ordered from?
 
+Answer:
 The code chunks below will give the total number of aisles
 ```{r}
 instacart %>% 
@@ -163,4 +164,27 @@ instacart %>%
   arrange(desc(n))
 ```
 
-Most of the items are ordered from the fresh vegetables aisle followed by fresh fruits and packaged vegetable fruits.
+Most of the items are ordered from the fresh vegetables aisle followed by fresh fruits and packaged vegetable fruits. This totally makes sense as these aisles contain items that are an important ingredient of a meal and hence ordered the most.
+
+##Problem 2.3 
+
+
+##Problem 2.4
+Make a table showing the most popular item in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”.
+
+Answer:
+
+The code chunk below filters the specific popular aisles that are given in the question, groups them by aisle and product_name and filters to keep the product from each aisle that is ordered maximum number of times. The result is presented in the form of a table using knitr::kable.
+
+
+```{r}
+instacart %>% 
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>% 
+  group_by(aisle, product_name) %>% 
+  summarize(n_prod = n()) %>% 
+  filter(n_prod == max(n_prod)) %>% 
+  knitr::kable()
+```
+
+Little Brown Sugar from the baking ingredients aisle, snacks sticks chicken & Rice Recipe Dog Treats from the dog food care and organic baby spinach from the packaged vegetable fruits are the most popular items. Out of these three, organic baby spinach is ordered the maximum number of times which shows that the users ordering from Instacart are definitely going for a healthy choice.
+
