@@ -81,10 +81,11 @@ brfss_tidy %>%
   group_by(location_abbr, year) %>% 
   summarize(n_obs = n()) %>% 
   ggplot(aes(x = year, y = n_obs, color = location_abbr)) +
-  geom_line() + labs(title = "No. of locations in each state from 2002 to 2010", x = "Year", y = "Number of observations")
+  geom_line() + labs(title = "No. of locations in each state from 2002 to 2010", x = "Year", y = "Number of observations") + theme(legend.position = "right")
 ```
 
-  
+There is a lot of clumping in this plot and peaks can be seen for the state of Florida for the year 2007 and 2010. Also, it can be seen that for NJ there were consistent number of locations from 2005 to 2006 and then from 2009 to 2010. 
+
 #Problem 1.4
 
 Make a table showing, for the years 2002, 2006, and 2010, the mean and standard deviation of the proportion of “Excellent” responses across locations in NY State.
@@ -104,5 +105,25 @@ brfss_tidy %>%
 
 There is not much difference in the mean proportion for the excellent response for the years 2006 and 2010, whereas the mean proportion for the excellent response is a bit different in the year 2002.
 
+#Problem 1.5
 
+For each year and state, compute the average proportion in each response category (taking the average across locations in a state). Make a five-panel plot that shows, for each response category separately, the distribution of these state-level averages over time.
+
+Answer:
+The code below makes a five panel plot that shows the distribution of state level averages over time for each response category separately. To compute the average proportion in each category for each year and state, I have grouped the data by year, location_abbr(state) and response and further made the five panel plot by using facet grid to separate out each response category.
+
+
+```{r}
+brfss_tidy %>% 
+  group_by(year,location_abbr,response) %>% 
+  summarize(average = mean(data_value, na.rm = TRUE)) %>% 
+  ggplot(aes(x = year, y = average, color = response)) + 
+  geom_point() + 
+  facet_grid(~ response) +
+  labs(title = "Distribution of State Level Averages Over Time", x = "Year", y = "Mean Proportions") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  
+```
+
+The distribution of state level averages over time suggest that the response "very good" was observed the most over the years and the response "poor" was observed the least.
 
