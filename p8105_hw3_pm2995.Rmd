@@ -8,7 +8,7 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  fig.width = 6,
+  fig.width = 10,
   fig.asp = .6,
   out.width = "90%"
 )
@@ -66,7 +66,7 @@ brfss_tidy %>%
   filter(n_locations == 7)
 ```
 
-Three states were observed at seven locations: CT, FL, and NC.
+In 2002, three states were observed at seven locations: CT, FL, and NC.
 
 ##Problem 1.3
 
@@ -75,16 +75,17 @@ Make a “spaghetti plot” that shows the number of locations in each state fro
 Answer:
 The code below groups the brfss_tidy data by location_abbr(state) and year and further uses summarize to take out the number of corresponding observations. It then creates a spaghetti plot that shows the number of locations in each state from 2002 to 2010. 
 
-
 ```{r}
 brfss_tidy %>% 
-  group_by(location_abbr, year) %>% 
-  summarize(n_obs = n()) %>% 
-  ggplot(aes(x = year, y = n_obs, color = location_abbr)) +
-  geom_line() + labs(title = "No. of locations in each state from 2002 to 2010", x = "Year", y = "Number of observations") + theme(legend.position = "right")
+  group_by(year, location_abbr) %>% 
+  distinct(location_desc) %>% 
+  summarize(n_obs = n()) %>%
+  ggplot(aes(x = year, y = n_obs, color = location_abbr)) + geom_point() +
+  geom_line() + labs(title = "No. of locations in each state from 2002 to 2010", x = "Year", y = "Number of distinct locations") + theme(legend.position = "right")
 ```
 
-There is a lot of clumping in this plot and peaks can be seen for the state of Florida for the year 2007 and 2010. Also, it can be seen that for NJ there were consistent number of locations from 2005 to 2006 and then from 2009 to 2010. 
+
+There is a lot of clumping in this plot. For most of the states the number of distict locations that were observed is 10 or less from 2002 to 2010. There is some amount of clumping in 10-15 region as well which is more towards years 2007-2010. Peaks can be seen for the state of Florida for the year 2007(44) and 2010(41). For NJ we see constant number of locations/counties were observed for 2005 to 2006 (19) and then from 2009 to 2010(19). As compared to other states, there were higher number of counties observed for NJ in 2007(16) and 2008(18). For the year 2008, there were 16 locations observed in NC and for 2010 there were 18 locations observed in TX. These are some of the distinctly visible outliers from the spaghetti plot. 
 
 #Problem 1.4
 
@@ -115,10 +116,10 @@ The code below makes a five panel plot that shows the distribution of state leve
 
 ```{r}
 brfss_tidy %>% 
-  group_by(year,location_abbr,response) %>% 
+  group_by(year, location_abbr,response) %>% 
   summarize(average = mean(data_value, na.rm = TRUE)) %>% 
-  ggplot(aes(x = year, y = average, color = response)) + 
-  geom_point() + 
+  ggplot(aes(x = year, y = average, group = year, color = response)) + 
+  geom_boxplot() + 
   facet_grid(~ response) +
   labs(title = "Distribution of State Level Averages Over Time", x = "Year", y = "Mean Proportions") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
@@ -149,13 +150,15 @@ There are `r nrow(instacart)` rows and `r ncol(instacart)` columns. All the vari
 How many aisles are there, and which aisles are the most items ordered from?
 
 Answer:
-The code chunks below will give the total number of aisles
+The code chunks below will give the total number of aisles.
+
 ```{r}
 instacart %>% 
   distinct(aisle) %>% 
   nrow()
 ```
 The total number of aisles are 134.
+
 
 The code chunk below will arrange the aisles as per descending order of their count which will enable us to see the aisle from which the most items are ordered.
 ```{r}
@@ -167,6 +170,34 @@ instacart %>%
 Most of the items are ordered from the fresh vegetables aisle followed by fresh fruits and packaged vegetable fruits. This totally makes sense as these aisles contain items that are an important ingredient of a meal and hence ordered the most.
 
 ##Problem 2.3 
+
+Make a plot that shows the number of items ordered in each aisle. Order aisles sensibly, and organize your plot so others can read it.
+
+Answer:
+
+```{r}
+instacart %>% 
+  group_by(aisle) %>% 
+  summarize(n_items = n()) %>% 
+  mutate(aisle = reorder(aisle, desc(n_items))) %>% 
+  ggplot(aes(x = aisle, y = n_items)) + geom_point() + labs(main = "Number of items ordered from each aisle", x = "Aisle", y = "No. of items")  + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+Most number of items are ordered from fresh vegetables aisle followed by fresh fruits, packaged vegetable fruits, yoghurt and packaged cheese.
+
+To improve the readability I have just included the top ten most ordered items.
+
+```{r}
+instacart %>% 
+  group_by(aisle) %>% 
+  summarize(n_items = n()) %>%
+  mutate(aisle = reorder(aisle, desc(n_items))) %>% 
+  filter(min_rank(aisle) < 11) %>% 
+  
+  ggplot(aes(x = aisle, y = n_items)) + geom_point() + labs(main = "Number of items ordered from each aisle", x = "Aisle", y = "No. of items")  + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
 
 
 ##Problem 2.4
@@ -192,16 +223,21 @@ Little Brown Sugar(ordered 499 times) from the baking ingredients aisle, snacks 
 
 Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
 
+Answer:
+The code chunk below first filters to keep the product names specified in the question. Further, it groups the data by product names and order_dow (which is day of the week when the order was placed) to summarize the mean of order_hour_of_day. This gives us the mean of order_hour_of_day for each product. I have used spread with key = order_dow to spread out(long to wide format) the values of the computed mean for each corresponding day. 
+ 
 ```{r}
 instacart %>%
   filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>% 
+  mutate(order_dow = ordered(order_dow, levels = c(0:6), labels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))) %>% 
   group_by(product_name, order_dow) %>% 
   summarize(mean = round(mean(order_hour_of_day))) %>% 
-  spread(key = order_dow, value = mean) %>%
+  spread(key = order_dow, value = mean) %>% 
   knitr::kable()
-
 ```
 
-It appears that coffee ice cream is ordered mostly in afternoons. Only on a friday it is ordered a bit before. Pink lady apples are ordered mostly around noon. I have considered 0 as sunday for this dataset.
+It appears that coffee ice cream is ordered mostly in afternoons. Only on a friday it is ordered a bit early. Pink lady apples are ordered mostly around noon. I have considered 0 as sunday for this dataset.
+
+#Problem 3
 
 
