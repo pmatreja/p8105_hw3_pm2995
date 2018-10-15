@@ -183,8 +183,8 @@ instacart %>%
   group_by(aisle) %>% 
   summarize(n_items = n()) %>% 
   mutate(aisle = reorder(aisle, desc(n_items))) %>% 
-  ggplot(aes(x = aisle, y = n_items)) + geom_point() + labs(main = "Number of items ordered from each aisle", x = "Aisle", y = "No. of items")  + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  ggplot(aes(x = aisle, y = n_items)) + geom_point() + labs(title = "Number of items ordered from each aisle", x = "Aisle", y = "No. of items")  + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5), text = element_text(size = 8))
 ```
 
 Most number of items are ordered from fresh vegetables aisle followed by fresh fruits, packaged vegetable fruits, yoghurt and packaged cheese.
@@ -198,7 +198,7 @@ instacart %>%
   mutate(aisle = reorder(aisle, desc(n_items))) %>% 
   filter(min_rank(aisle) < 11) %>% 
   
-  ggplot(aes(x = aisle, y = n_items)) + geom_point() + labs(main = "Number of items ordered from each aisle", x = "Aisle", y = "No. of items")  + 
+  ggplot(aes(x = aisle, y = n_items)) + geom_point() + labs(title = "Number of items ordered from each aisle", x = "Aisle", y = "No. of items")  + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
@@ -242,5 +242,21 @@ instacart %>%
 It appears that coffee ice cream is ordered mostly in afternoons. Only on a friday it is ordered a bit early. Pink lady apples are ordered mostly around noon. I have considered 0 as sunday for this dataset.
 
 #Problem 3
+
+Loading the dataset
+
+```{r}
+data("ny_noaa")
+```
+
+##Problem 3.1
+
+Short description of the dataset
+
+The NY NOAA data set is super extensive dataset with `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. The key variables include id, tmax and tmin which are class `character`, prcp, snow , snwd are class `integer` and date. The variable ID denotes weather station ID, date of observation is included under date, precipitation (in tenths of mm) under prcp, snowfall observations are included in snow (in mm), depth of snow is inculded in snwd, tmax and tmin represent the maximum and minimum temperatures (in tenths of degrees C). The data include weather information for various weather station across the NY state from January 1, 1981 through December 31, 2010. It has been mentioned on the website with the data that each weather station may collect only a subset of these variables, and therefore the resulting dataset contains extensive missing data. There are total 
+`r sum(is.na(ny_noaa$tmax))`values missing for tmax, that denotes
+`r {sum(is.na(ny_noaa$tmax)) / (ny_noaa %>% nrow)} * 100`% values are missing for tmax. Also, `r sum(is.na(ny_noaa$tmin))` values are missing for tmin, that denotes `r {sum(is.na(ny_noaa$tmin)) / (ny_noaa %>% nrow)} * 100`% values missing for tmin indicating that not all stations recorded maximum and minimum temperatures for all the days. There are total `r sum(is.na(ny_noaa$prcp))` number of values missing for precipitation which indicates `r {sum(is.na(ny_noaa$prcp)) / (ny_noaa %>% nrow)}*100`% of values are missing for precipitation. This indicates that not all stations record precipitation on a daily basis.
+
+Taking the snow variable into account, the total missing values are `r sum(is.na(ny_noaa$snow))` which indicates `r {sum(is.na(ny_noaa$snow))/(ny_noaa %>% nrow)} * 100`% values are missing. For snow depth, `r sum(is.na(ny_noaa$snwd))` values that is `r {sum(is.na(ny_noaa$snwd))/(ny_noaa %>% nrow)} * 100`% values are missing. We should be aware about these missing data while filtering values or while looking at the summary statistics of the data.
 
 
