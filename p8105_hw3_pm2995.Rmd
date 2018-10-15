@@ -126,7 +126,7 @@ brfss_tidy %>%
   
 ```
 
-The distribution of state level averages over time suggest that the response "very good" was observed the most over the years and the response "poor" was observed the least.
+The distribution of state level averages over time suggest that the response "very good" was observed the most over the years and the response "poor" was observed the least. The median for the state level average proportions for the excellent category across the years lies between 20 and 25, for the very good category it lies between 30 and 35, for the good category it lies between 25 and 30, for fair category it lies between 7 and 12, for the poor category, it lies between 0 and 5. From the plot it can be seen that there is a larger range of values for the excellent, very good and good category as compared to the fair and poor categories. The values vary the least for the poor category. 
 
 
 #Problem 2
@@ -318,5 +318,33 @@ ny_noaa_tidy %>%
 
 ```
 
-The plot shows that the mean maximum temperatures across all the stations in NY across 1981-2010 was much greater in July than January. There is a lot of clumping in these plots. It was around 20-34ºC in July and -10 to 10ºC in January for most of the stations across New York. There are some outliers for the month of January; In 1982 the average maximum temperature dropped to around -13ºC, in 2004 there was a drop to around -11ºC, and in 2005 it dropped to -12ºC across a station in NY. There are few outliers for the month of July; it dropped to around 14ºC(13.95 actually) in 1988, 18ºC in 2004 and was around 19ºC in 1984, 2000 and 2007 across one of the station in NY. 
+The plot shows that the mean maximum temperatures across all the stations in NY across 1981-2010 was much greater in July than January. There is a lot of clumping in these plots. Overall, it can also be seen that there are lots of fluctuations across the years for both months suggested by the zig zag structure. There are more fluctuations for the month of January than July. It was around 20-34ºC in July and -10 to 10ºC in January for most of the stations across New York. There are some outliers for the month of January; In 1982 the average maximum temperature dropped to around -13ºC, in 2004 there was a drop to around -11ºC, and in 2005 it dropped to -12ºC across a station in NY. There are few outliers for the month of July; it dropped to around 14ºC(13.95 actually) in 1988, 18ºC in 2004 and was around 19ºC in 1984, 2000 and 2007 across one of the station in NY. 
 
+
+
+#Problem 3.4
+
+Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+
+Answer:
+
+The code below first loads the patchwork, hexbin and ggridges packages that will be useful for computing plots. It then creates two plots: 1- tmax vs tmin for the full data set (here I have used geom_hex as we are dealing with lots of data) 2- distribution of snowfall values > 0 and
+< 100 separately per year(I have used density ridges to show the distribution of the data). bith the plots were shown in the same graphic by using the patchwork package.
+
+```{r}
+library(patchwork)
+library(hexbin)
+library(ggridges)
+
+tmax_tmin_plot = ggplot(ny_noaa_tidy, aes(x = tmin, y = tmax)) +
+geom_hex(na.rm = TRUE) + theme(legend.direction = "vertical") + labs(title = "Tmax Vs Tmin", x = "Minimum Temperature(ºC)", y = "Maximum Temperature(ºC)")
+
+snow_plot = ny_noaa_tidy %>% 
+  filter(snow > 0 & snow < 100) %>%
+  ggplot(aes(y = year, x = snow)) +
+  geom_density_ridges(scale = .85) + labs(title = "Distribution of snowfall", x = "Snow(in mm)", y = "Year" )
+
+tmax_tmin_plot + snow_plot
+```
+
+Overall positive correlation can be seen between tmax and tmin with few outliers. Referring the color gradient, we can see that for most of the days tmax 25 and tmin around 14 was seen(count 50000). For the snowfall plot, for most of the years it can be seen that distribution of snowfall is pretty consistent. The peaks lie around 10 and 25. From 2006 - 2010, it can be seen that the height of the first peak (indicating the value of 10 mm ) increased as compared to other years. 
