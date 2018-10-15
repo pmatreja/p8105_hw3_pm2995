@@ -227,7 +227,7 @@ Little Brown Sugar(ordered 499 times) from the baking ingredients aisle, snacks 
 Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
 
 Answer:
-The code chunk below first filters to keep the product names specified in the question. Further, it groups the data by product names and order_dow (which is day of the week when the order was placed) to summarize the mean of order_hour_of_day. This gives us the mean of order_hour_of_day for each product. I have used spread with key = order_dow to spread out(long to wide format) the values of the computed mean for each corresponding day. 
+The code chunk below first filters to keep the product names specified in the question. Further, it groups the data by product names and order_dow (which is day of the week when the order was placed) to summarize the mean of order_hour_of_day. This gives us the mean of order_hour_of_day for each product. I have used spread with key = order_dow to spread out (long to wide format) the values of the computed mean for each corresponding day. 
  
 ```{r}
 instacart %>%
@@ -329,7 +329,7 @@ Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a
 Answer:
 
 The code below first loads the patchwork, hexbin and ggridges packages that will be useful for computing plots. It then creates two plots: 1- tmax vs tmin for the full data set (here I have used geom_hex as we are dealing with lots of data) 2- distribution of snowfall values > 0 and
-< 100 separately per year(I have used density ridges to show the distribution of the data). bith the plots were shown in the same graphic by using the patchwork package.
+< 100 separately per year(I have used density ridges to show the distribution of the data). Both the plots were shown in the same graphic by using the patchwork package.
 
 ```{r}
 library(patchwork)
@@ -347,4 +347,4 @@ snow_plot = ny_noaa_tidy %>%
 tmax_tmin_plot + snow_plot
 ```
 
-Overall positive correlation can be seen between tmax and tmin with few outliers. Referring the color gradient, we can see that for most of the days tmax 25 and tmin around 14 was seen(count 50000). For the snowfall plot, for most of the years it can be seen that distribution of snowfall is pretty consistent. The peaks lie around 10 and 25. From 2006 - 2010, it can be seen that the height of the first peak (indicating the value of 10 mm ) increased as compared to other years. 
+The plot for the tmax vs tmin suggests that overall there is a positive correlation between the two. The relationship between the two appear mostly linear in the middle where most of the observations occur. Referring the color gradient, we can see that for tmax 5 (tmin around -1 ) and 25 (tmin around 15) are the spots where maximum observations were seen(around count 50000). For the snowfall plot, for most of the years it can be seen that distribution of snowfall is pretty consistent. Four nodes of common observations can be seen around 12, 25, 50, and 75 mm respectively. The peaks lie around 12 mm and 25 mm. From 2006 - 2010, it can be seen that the height of the first peak (indicating the value around 10 mm ) increased as compared to other years. 
